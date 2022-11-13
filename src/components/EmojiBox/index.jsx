@@ -1,0 +1,37 @@
+import { useState, useEffect } from "react";
+import PropTypes from "prop-types";
+import styles from "./Emoji.module.css";
+import classnames from "classnames";
+
+const EmojiBox = ({ title, symbol }) => {
+  const [selected, setSelected] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setSelected(false), 350);
+    return () => clearTimeout(timer);
+  }, [selected]);
+
+  return (
+    <div
+      onClick={() => {
+        navigator.clipboard.writeText(symbol);
+        setSelected(true);
+      }}
+      className={classnames(styles.emojiBox, {
+        [styles.selected]: selected,
+      })}
+    >
+      <p
+        class={styles.emoji}
+        dangerouslySetInnerHTML={{ __html: `&#${symbol.codePointAt(0)}` }}
+      />
+      <p class={styles.emojiText}>{selected ? "Copied" : title}</p>
+    </div>
+  );
+};
+
+EmojiBox.propTypes = {
+  title: PropTypes.string,
+  symbol: PropTypes.string,
+};
+export default EmojiBox;
